@@ -1,2 +1,2 @@
 # horus_project
-Certainly, the best of weather apps !
+Certainly, the God of weather apps !

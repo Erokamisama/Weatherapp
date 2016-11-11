@@ -2,10 +2,12 @@ package ca.qc.bdeb.info.horus;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,6 +58,9 @@ public class ForecastAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         int viewType = getItemViewType(cursor.getPosition());
+
+//        viewHolder.layoutView.setBackgroundColor(Utility.getColorRessourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
                 // Get weather icon
@@ -73,6 +78,7 @@ public class ForecastAdapter extends CursorAdapter {
 
         // Read date from cursor
         long dateInMillis = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
+
         // Find TextView and set formatted date on it
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
 
@@ -114,6 +120,7 @@ public class ForecastAdapter extends CursorAdapter {
      * Cache of the children views for a forecast list item.
      */
     public static class ViewHolder {
+        public final FrameLayout layoutView;
         public final ImageView iconView;
         public final TextView dateView;
         public final TextView descriptionView;
@@ -121,6 +128,7 @@ public class ForecastAdapter extends CursorAdapter {
         public final TextView lowTempView;
 
         public ViewHolder(View view) {
+            layoutView = (FrameLayout) view.findViewById(R.id.list_item_icon_layout);
             iconView = (ImageView) view.findViewById(R.id.list_item_icon);
             dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
             descriptionView = (TextView) view.findViewById(R.id.list_item_forecast_textview);

@@ -1,14 +1,24 @@
 package ca.qc.bdeb.info.horus;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -20,7 +30,8 @@ public class ForecastAdapter extends CursorAdapter {
     private static final int VIEW_TYPE_COUNT = 2;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
-
+    //Set the radius of the Blur. Supported range 0 < radius <= 25
+    private static final float BLUR_RADIUS = 20f;
     // Flag to determine if we want to use a separate view for "today".
     private boolean mUseTodayLayout = true;
 
@@ -52,6 +63,7 @@ public class ForecastAdapter extends CursorAdapter {
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
@@ -72,6 +84,14 @@ public class ForecastAdapter extends CursorAdapter {
                 // Get weather icon
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
                         cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), Utility.getIconResourceForWeatherCondition(
+                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+                Bitmap blurredBitmap = blur(bitmap);
+                viewHolder.backgroundIconView.setImageBitmap(blurredBitmap);
+                viewHolder.backgroundIconView.setAlpha(0.35F);
+
+                Animation animation = AnimationUtils.loadAnimation(context, R.anim.popout);
+                viewHolder.iconView.startAnimation(animation);
                 break;
             }
         }
@@ -116,12 +136,32 @@ public class ForecastAdapter extends CursorAdapter {
         return VIEW_TYPE_COUNT;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public Bitmap blur(Bitmap image) {
+        if (null == image) return null;
+
+        Bitmap outputBitmap = Bitmap.createBitmap(image);
+        final RenderScript renderScript = RenderScript.create(mContext);
+        Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);
+        Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
+
+        //Intrinsic Gausian blur filter
+        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+        theIntrinsic.setRadius(BLUR_RADIUS);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+        return outputBitmap;
+    }
+
     /**
      * Cache of the children views for a forecast list item.
      */
     public static class ViewHolder {
         public final FrameLayout layoutView;
+        public final RelativeLayout layoutInfosView;
         public final ImageView iconView;
+        public final ImageView backgroundIconView;
         public final TextView dateView;
         public final TextView descriptionView;
         public final TextView highTempView;
@@ -129,7 +169,9 @@ public class ForecastAdapter extends CursorAdapter {
 
         public ViewHolder(View view) {
             layoutView = (FrameLayout) view.findViewById(R.id.list_item_icon_layout);
+            layoutInfosView = (RelativeLayout) view.findViewById(R.id.list_item_infos_layout);
             iconView = (ImageView) view.findViewById(R.id.list_item_icon);
+            backgroundIconView = (ImageView) view.findViewById(R.id.list_item_icon_background);
             dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
             descriptionView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
             highTempView = (TextView) view.findViewById(R.id.list_item_high_textview);

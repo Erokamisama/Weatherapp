@@ -5,9 +5,9 @@
         <ripple android:color="@color/grey" />
     </item>
 
-    <item android:drawable="@color/sunshine_light_blue" android:state_activated="true" />
+    <item android:drawable="@color/horus_light_blue" android:state_activated="true" />
 
-    <item android:drawable="@color/sunshine_light_blue" android:state_selected="true" />
+    <item android:drawable="@color/horus_light_blue" android:state_selected="true" />
 
-    <item android:drawable="@color/sunshine_blue" />
+    <item android:drawable="@color/horus_blue" />
 </selector>

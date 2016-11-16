@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="grey">#cccccc</color>
     <color name="grey_700">#646464</color>
     <color name="black">#000000</color>
+    <color name="light_black">#212121</color>
 
-    <color name="sunshine_light_blue">#ff64c2f4</color>
-    <color name="sunshine_blue">#ff1ca8f4</color>
-    <color name="sunshine_dark_blue">#0288D1</color>
+    <color name="horus_light_blue_opacity">#73b3e5fc</color>
+    <color name="horus_light_blue">#b3e5fc</color>
+    <color name="horus_blue">#03A9F4</color>
+    <color name="horus_dark_blue">#0288d1</color>
 
-    <color name="red_flat">#ff6d6d</color>
+    <color name="red_flat">#FF8A80</color>
     <color name="yellow_flat">#ffe963</color>
-    <color name="blue_flat">#bdf7ff</color>
+    <color name="blue_flat">#82B1FF</color>
     <color name="grey_flat">#4b595e</color>
 
 </resources>

@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import ca.qc.bdeb.info.horus.sync.SunshineSyncAdapter;
 
@@ -60,6 +62,16 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         forecastFragment.setUseTodayLayout(!mTwoPane);
 
         SunshineSyncAdapter.initializeSyncAdapter(this);
+
+        Button testAnimationBtn = (Button) findViewById(R.id.testAnimationBtn);
+        testAnimationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AnimationTests.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
